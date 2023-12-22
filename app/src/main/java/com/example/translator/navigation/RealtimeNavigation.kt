@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.translator.ui.screens.realtime.RealTimeBoardScreen
 import com.example.translator.ui.screens.realtime.RealTimeScreen
 import com.example.translator.ui.screens.realtime.RealtimeViewModel
 import com.example.translator.ui.screens.text.TextViewModel
@@ -18,9 +19,19 @@ fun NavGraphBuilder.realTimeNavigation(
     ) {
         composable(
             route = Screen.RealTime.route
-        ){
+        ) {
+            RealTimeBoardScreen(
+                realtimeViewModel = realtimeViewModel,
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Screen.RealTime.addArgument("analysis")
+        ) {
             RealTimeScreen(
-                realtimeViewModel= realtimeViewModel
+                realtimeViewModel = realtimeViewModel,
+                navController = navController
             )
         }
     }

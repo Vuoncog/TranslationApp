@@ -38,7 +38,7 @@ fun DropDownMenu(
         Character.Latin,
         Character.Chinese,
         Character.Devanagari,
-        Character.Kanji,
+        Character.Japanese,
         Character.Korean
     )
 

@@ -6,9 +6,11 @@ import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.example.translator.utils.Character
 import com.example.translator.utils.Language
 import com.example.translator.utils.convertToLanguageTag
 import com.example.translator.utils.languageIdentifier
+import com.example.translator.utils.setLanguage
 import com.example.translator.utils.textTranslator
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -26,9 +28,10 @@ import kotlin.coroutines.suspendCoroutine
 class TextRecognitionAnalyzer(
     private val onDetectedTextUpdated: (String) -> Unit,
     private val onDetectedLanguageUpdated: (String) -> Unit,
-    private val sourceLanguage: Language,
+    private var sourceLanguage: Language,
     private val targetLanguage: Language,
-    private val downloadedLanguages: List<String>
+    private val downloadedLanguages: List<String>,
+    private val textRecognizer: TextRecognizer
 ) : ImageAnalysis.Analyzer {
 
     companion object {
@@ -36,8 +39,6 @@ class TextRecognitionAnalyzer(
     }
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val textRecognizer: TextRecognizer =
-        TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
     @OptIn(ExperimentalGetImage::class)
     override fun analyze(imageProxy: ImageProxy) {
@@ -51,15 +52,24 @@ class TextRecognitionAnalyzer(
                     .addOnSuccessListener { visionText: Text ->
                         val detectedText: String = visionText.text
                         if (detectedText.isNotBlank()) {
+                            Log.d(
+                                "MLRECOG", Character.getFromTextRecognizer(
+                                    textRecognizer
+                                ).name
+                            )
 //                            onDetectedTextUpdated(detectedText)
+                            Log.d(
+                                "MLRECOGN", sourceLanguage.tag + " " +
+                                        targetLanguage + " " + checkModel()
+                            )
                             languageIdentifier(
                                 text = detectedText,
                                 onSuccess = {
                                     onDetectedLanguageUpdated(it)
+                                    sourceLanguage = setLanguage(it)
                                 }
                             )
                             if (checkModel()) {
-
                                 textTranslator(
                                     sourceLanguageTag = convertToLanguageTag(sourceLanguage),
                                     targetLanguageTag = convertToLanguageTag(targetLanguage),

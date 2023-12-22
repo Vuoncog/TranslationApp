@@ -16,8 +16,13 @@ enum class Character(
     val textRecognizer: TextRecognizer
 ) {
     Latin(R.drawable.latin, "Latin", TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)),
-    Kanji(R.drawable.kanji, "Japanese", TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())),
+    Japanese(R.drawable.kanji, "Japanese", TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())),
     Chinese(R.drawable.chinese_letter, "Chinese", TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())),
     Devanagari(R.drawable.devanagari, "Devanagari", TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())),
-    Korean(R.drawable.hangul, "Korean", TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())),
+    Korean(R.drawable.hangul, "Korean", TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build()));
+
+    companion object {
+        fun getFromTextRecognizer(textRecognizer: TextRecognizer): Character = Character.values()
+            .find { it.textRecognizer == textRecognizer } ?: Latin
+    }
 }

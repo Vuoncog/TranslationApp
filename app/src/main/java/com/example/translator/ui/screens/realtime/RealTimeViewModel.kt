@@ -7,6 +7,9 @@ import com.example.translator.utils.Language
 import com.example.translator.utils.convertToLanguageTag
 import com.example.translator.utils.setLanguage
 import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
@@ -33,6 +36,12 @@ class RealtimeViewModel : ViewModel(){
         )
     }
 
+    fun setTextRecognizerOptions(textRecognizer: TextRecognizer){
+        _realtimeUiState.value = _realtimeUiState.value.copy(
+            textRecognition = textRecognizer,
+        )
+    }
+
 
 }
 
@@ -40,4 +49,5 @@ data class RealtimeUiState(
     val sourceLanguage: Language = setLanguage(TranslateLanguage.ENGLISH),
     val targetLanguage: Language = setLanguage(Locale.getDefault().language),
     val downloadedLanguages: List<String> = emptyList(),
+    val textRecognition: TextRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 )

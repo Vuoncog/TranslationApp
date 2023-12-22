@@ -112,6 +112,46 @@ fun MainScreen(
                 }
             }
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .clip(shape)
+                        .weight(1f)
+                        .clickable {
+                            navigateToRealTime()
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.realtime_translator),
+                        contentDescription = "Realtime translator",
+                        contentScale = ContentScale.Fit
+                    )
+                    Text(
+                        text = "Realtime \n Translator",
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color(219, 233, 244))
+                            .padding(vertical = 4.dp)
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .clip(shape)
+                        .weight(1f)
+                ) {
+
+                }
+            }
+
             Text(
                 text = "See downloaded language",
                 color = Color(0xFF6581BF),
@@ -121,20 +161,6 @@ fun MainScreen(
                     .padding(top = 20.dp)
                     .clickable {
                         navigateToLanguage()
-                    },
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Start
-            )
-
-            Text(
-                text = "Real Time",
-                color = Color(0xFF6581BF),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .padding(top = 20.dp)
-                    .clickable {
-                        navigateToRealTime()
                     },
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Start

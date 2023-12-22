@@ -92,7 +92,11 @@ sealed class Screen(val route: String) {
 
     object RealTime : Screen(
         route = "realtime"
-    )
+    ){
+        fun addArgument(argument: String): String {
+            return RealTime.route + "/${argument}"
+        }
+    }
 
     object Camera : Screen(
         route = "camera"
