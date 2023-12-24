@@ -3,6 +3,8 @@ package com.example.translator.utils
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.languageid.LanguageIdentification
@@ -122,4 +124,62 @@ fun removeModel(
             onSuccess(languageTag)
         }
 }
+
+fun boxInfo(rotate: Int, textBlock: android.graphics.Rect): Pair<Int, Int> {
+    return when (rotate) {
+        90, 270 -> {
+            val width = textBlock.width()
+            val height = textBlock.height()
+            Pair(width, height)
+        }
+
+        else -> {
+            val width = textBlock.height()
+            val height = textBlock.width()
+            Pair(width, height)
+        }
+    }
+}
+
+fun offsetInfo(
+    rotate: Int,
+    textBlock: android.graphics.Rect,
+    width: Int, height: Int
+): Pair<Int, Int> {
+    return when (rotate) {
+        90 -> {
+            val offsetX = textBlock.left
+            val offsetY = textBlock.bottom
+            Pair(offsetX, offsetY)
+        }
+
+        180 -> {
+            val offsetX = textBlock.top
+            val offsetY = height - textBlock.right
+            Pair(offsetX, offsetY)
+        }
+
+        270 -> {
+            val offsetX = width - textBlock.right
+            val offsetY = height - textBlock.bottom
+            Pair(offsetX, offsetY)
+        }
+
+        else -> {
+            val offsetX = width - textBlock.top
+            val offsetY = textBlock.left
+            Log.d("OFFSETHEIGHT", textBlock.height().toString())
+            Pair(offsetX, offsetY)
+        }
+    }
+}
+
+fun textRotate(rotate: Float): Float{
+    return when (rotate){
+        180f -> 270f
+        0f -> 90f
+        else -> rotate - 90
+    }
+}
+
 

@@ -7,7 +7,9 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -35,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,8 +48,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.toComposeRect
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -53,10 +62,18 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
+import coil.size.Size
 import com.example.translator.ui.components.LanguageCard
 import com.example.translator.ui.screens.camera.CameraPreview
 import com.example.translator.utils.Language
+import com.example.translator.utils.boxInfo
+import com.example.translator.utils.convertToLanguageTag
+import com.example.translator.utils.languageIdentifier
+import com.example.translator.utils.offsetInfo
 import com.example.translator.utils.setLanguage
+import com.example.translator.utils.textRotate
+import com.example.translator.utils.textTranslator
+import com.google.mlkit.vision.text.Text.TextBlock
 import com.google.mlkit.vision.text.TextRecognizer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,109 +82,193 @@ fun RealTimeScreen(
     realtimeViewModel: RealtimeViewModel,
     navController: NavHostController
 ) {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
+    val screenWidth = configuration.screenWidthDp
     val context: Context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val uiState by realtimeViewModel.realtimeUiState.collectAsState()
     val cameraController: LifecycleCameraController =
         remember { LifecycleCameraController(context) }
-    var detectedText by remember { mutableStateOf("No text detected yet..") }
-    var expanded by remember { mutableStateOf(false) }
 
-    fun onTextUpdated(updatedText: String) {
-        detectedText = updatedText
-    }
-    Column(
-        modifier = Modifier.fillMaxSize(),
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopStart
     ) {
-        Box(
+        AndroidView(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.8f),
-            contentAlignment = androidx.compose.ui.Alignment.TopStart
-        ) {
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxSize(),
-                factory = { context ->
-                    PreviewView(context).apply {
-                        setBackgroundColor(Color.Black.toArgb())
-                        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                        scaleType = PreviewView.ScaleType.FILL_START
-                    }.also { previewView ->
-                        startTextRecognition(
-                            context = context,
-                            cameraController = cameraController,
-                            lifecycleOwner = lifecycleOwner,
-                            previewView = previewView,
-                            sourceLanguage = uiState.sourceLanguage,
-                            targetLanguage = uiState.targetLanguage,
-                            onDetectedTextUpdated = ::onTextUpdated,
-                            downloadLanguages = uiState.downloadedLanguages,
-                            textRecognizer = uiState.textRecognition,
-                            onDetectedLanguageUpdated = {
-                                realtimeViewModel.setSourceLanguage(
-                                    language = setLanguage(it)
-                                )
-                            }
-                        )
-                    }
-                }
-            )
-
-            IconButton(
-                onClick = {
-                    cameraController.cameraSelector =
-                        if (cameraController.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        } else CameraSelector.DEFAULT_BACK_CAMERA
-                },
-                modifier = Modifier
-                    .offset(16.dp, 16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Cameraswitch,
-                    contentDescription = "Switch camera",
-                    tint = Color.White
-                )
-            }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .background(Color.White)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { expanded = true },
-                verticalAlignment = Alignment.CenterVertically
-            )
-            {
-                IconButton(
-                    onClick = {
-                        navController.popBackStack()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.Black
+                .fillMaxSize(),
+            factory = { context ->
+                PreviewView(context).apply {
+                    setBackgroundColor(Color.Black.toArgb())
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    scaleType = PreviewView.ScaleType.FILL_START
+                }.also { previewView ->
+                    startTextRecognition(
+                        context = context,
+                        cameraController = cameraController,
+                        lifecycleOwner = lifecycleOwner,
+                        previewView = previewView,
+                        sourceLanguage = uiState.sourceLanguage,
+                        targetLanguage = uiState.targetLanguage,
+                        downloadLanguages = uiState.downloadedLanguages,
+                        textRecognizer = uiState.textRecognition,
+                        onDetectedTextBlocksUpdated = {
+                            realtimeViewModel.setTextBlocks(it)
+                        },
+                        onRotateUpdated = {
+                            realtimeViewModel.setRotate(it)
+                        }
                     )
                 }
-                LanguageCard(
-                    language = uiState.targetLanguage,
-                )
             }
-            Text(
-                text = detectedText,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
+        )
+
+        IconButton(
+            onClick = {
+                cameraController.cameraSelector =
+                    if (cameraController.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                        CameraSelector.DEFAULT_FRONT_CAMERA
+                    } else CameraSelector.DEFAULT_BACK_CAMERA
+            },
+            modifier = Modifier
+                .offset(16.dp, 16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Cameraswitch,
+                contentDescription = "Switch camera",
+                tint = Color.White
             )
         }
+    }
+
+    if (uiState.textBlocks.isNotEmpty()) {
+        uiState.textBlocks.forEach { block ->
+            DrawAndTranslate(
+                block = block,
+                rotate = uiState.rotate,
+                screenWidth = screenWidth,
+                screenHeight = screenHeight,
+                targetLanguage = uiState.targetLanguage,
+                downloadedLanguages = uiState.downloadedLanguages
+            )
+        }
+    }
+}
+
+@Composable
+fun DrawAndTranslate(
+    block: TextBlock,
+    rotate: Int,
+    screenWidth: Int,
+    screenHeight: Int,
+    targetLanguage: Language,
+    downloadedLanguages: List<String>
+) {
+    val textBlock = block.boundingBox!!
+    val boxInfo = boxInfo(
+        rotate = rotate,
+        textBlock = textBlock
+    )
+    val offsetInfo = offsetInfo(
+        rotate = rotate,
+        textBlock = textBlock,
+        width = screenWidth / 3 * 4,
+        height = screenHeight
+    )
+    val width = boxInfo.first
+    val height = boxInfo.second
+    val offsetX = offsetInfo.first
+    val offsetY = offsetInfo.second
+
+    var textTranslated by remember { mutableStateOf(block.text) }
+    var isTranslated by remember { mutableStateOf(true) }
+
+    LaunchedEffect(key1 = block.text) {
+        translateBlock(
+            text = textTranslated,
+            targetLanguage = targetLanguage,
+            downloadedLanguages = downloadedLanguages,
+            onSuccess = { translatedText: String, translated: Boolean ->
+                textTranslated = translatedText
+                isTranslated = translated
+            }
+        )
+    }
+
+    Canvas(
+        modifier = Modifier
+            .width(width.dp)
+            .height(height.dp)
+            .offset(
+                x = offsetX.dp,
+                y = offsetY.dp
+            ),
+        onDraw = {
+            drawRect(
+                color = if (isTranslated) Color.Green else Color.Red,
+                style = Stroke(
+                    width = 1f
+                )
+            )
+        }
+    )
+    Text(
+        text = textTranslated,
+        color = if (isTranslated) Color.Green else Color.Red,
+        modifier = Modifier
+            .offset(
+                x = offsetX.dp,
+                y = offsetY.dp
+            )
+            .rotate(textRotate(rotate.toFloat())),
+    )
+}
+
+private fun translateBlock(
+    text: String,
+    targetLanguage: Language,
+    downloadedLanguages: List<String>,
+    onSuccess: (String, Boolean) -> Unit
+) {
+    languageIdentifier(
+        text = text,
+        onSuccess = {
+            if (checkModel(
+                    sourceLanguage = setLanguage(it),
+                    targetLanguage = targetLanguage,
+                    downloadedLanguages = downloadedLanguages
+                )
+            ) {
+                textTranslator(
+                    text = text,
+                    sourceLanguageTag = it,
+                    targetLanguageTag = convertToLanguageTag(targetLanguage),
+                    onSuccess = { translatedText ->
+                        onSuccess(translatedText, true)
+                    }
+                )
+            } else {
+                onSuccess("", false)
+            }
+
+        }
+    )
+}
+
+private fun checkModel(
+    sourceLanguage: Language,
+    targetLanguage: Language,
+    downloadedLanguages: List<String>
+): Boolean {
+    val s = convertToLanguageTag(sourceLanguage)
+    val t = convertToLanguageTag(targetLanguage)
+    return if (downloadedLanguages.isNotEmpty()) {
+        val checkModel = downloadedLanguages.contains(s) && downloadedLanguages.contains(t)
+        checkModel
+    } else {
+        false
     }
 }
 
@@ -176,24 +277,24 @@ private fun startTextRecognition(
     cameraController: LifecycleCameraController,
     lifecycleOwner: LifecycleOwner,
     previewView: PreviewView,
-    onDetectedTextUpdated: (String) -> Unit,
-    onDetectedLanguageUpdated: (String) -> Unit,
+    onDetectedTextBlocksUpdated: (List<TextBlock>) -> Unit,
+    onRotateUpdated: (Int) -> Unit,
     sourceLanguage: Language,
     targetLanguage: Language,
     downloadLanguages: List<String>,
-    textRecognizer: TextRecognizer
+    textRecognizer: TextRecognizer,
 ) {
 
-    cameraController.imageAnalysisTargetSize = CameraController.OutputSize(Int.MAX_VALUE)
+//    cameraController.imageAnalysisTargetSize = CameraController.OutputSize()
     cameraController.setImageAnalysisAnalyzer(
         ContextCompat.getMainExecutor(context),
         TextRecognitionAnalyzer(
-            onDetectedTextUpdated = onDetectedTextUpdated,
-            onDetectedLanguageUpdated = onDetectedLanguageUpdated,
+            onDetectedTextBlocksUpdated = onDetectedTextBlocksUpdated,
             sourceLanguage = sourceLanguage,
             targetLanguage = targetLanguage,
             downloadedLanguages = downloadLanguages,
-            textRecognizer = textRecognizer
+            textRecognizer = textRecognizer,
+            onRotateUpdated = onRotateUpdated
         )
     )
 
