@@ -188,7 +188,7 @@ fun imageProcessing(
 //                    Toast.LENGTH_LONG
 //                ).show()
             }
-            .addOnFailureListener { e ->
+            .addOnFailureListener { _ ->
                 Toast.makeText(
                     context,
                     "Can't recognize this image",

@@ -1,10 +1,7 @@
 package com.example.translator.ui.screens.realtime
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.translator.utils.Constant
-import com.example.translator.utils.Language
-import com.example.translator.utils.convertToLanguageTag
+import com.example.translator.data.Language
 import com.example.translator.utils.setLanguage
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.vision.text.Text.TextBlock

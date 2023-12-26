@@ -2,8 +2,6 @@ package com.example.translator.navigation
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,7 +11,6 @@ import com.example.translator.ui.screens.language.LanguageViewModel
 import com.example.translator.ui.screens.main.MainScreen
 import com.example.translator.ui.screens.realtime.RealtimeViewModel
 import com.example.translator.ui.screens.text.TextViewModel
-import com.example.translator.utils.setLanguage
 
 @Composable
 fun SetUpNavigation(

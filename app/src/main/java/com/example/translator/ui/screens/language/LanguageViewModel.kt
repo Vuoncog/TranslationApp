@@ -1,9 +1,7 @@
 package com.example.translator.ui.screens.language
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.translator.utils.Constant.supportedLanguages
-import com.example.translator.utils.convertToLanguageTag
 import com.example.translator.utils.setLanguage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

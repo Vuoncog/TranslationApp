@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalStdlibApi::class)
-
-package com.example.translator.utils
+package com.example.translator.data
 
 import androidx.annotation.DrawableRes
 import com.example.translator.R

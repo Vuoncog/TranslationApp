@@ -7,7 +7,6 @@ import androidx.navigation.navigation
 import com.example.translator.ui.screens.realtime.RealTimeBoardScreen
 import com.example.translator.ui.screens.realtime.RealTimeScreen
 import com.example.translator.ui.screens.realtime.RealtimeViewModel
-import com.example.translator.ui.screens.text.TextViewModel
 
 fun NavGraphBuilder.realTimeNavigation(
     navController: NavHostController,

@@ -1,16 +1,8 @@
 package com.example.translator.ui.screens.text
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.example.translator.utils.Language
+import com.example.translator.data.Language
 import com.example.translator.utils.convertToLanguageTag
-import com.example.translator.utils.getDownloadedAllModel
 import com.example.translator.utils.setLanguage
 import com.example.translator.utils.textTranslator
 import kotlinx.coroutines.flow.MutableStateFlow

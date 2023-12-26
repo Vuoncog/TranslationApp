@@ -3,8 +3,7 @@ package com.example.translator.utils
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
+import com.example.translator.data.Language
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.languageid.LanguageIdentification
@@ -12,7 +11,6 @@ import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.TranslateRemoteModel
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
-import java.util.Locale
 
 fun setLanguage(tag: String): Language {
     return Language.getFromTag(tag)

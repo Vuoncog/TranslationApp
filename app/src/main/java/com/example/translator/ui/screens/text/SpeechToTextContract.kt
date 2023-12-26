@@ -5,12 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.speech.RecognizerIntent
 import androidx.activity.result.contract.ActivityResultContract
-import com.example.translator.utils.Language
+import com.example.translator.data.Language
 import com.example.translator.utils.convertToLanguageTag
-import java.util.Locale
 
 class SpeechToTextContract(language: Language) : ActivityResultContract<Unit, ArrayList<String>?>() {
-    val languageTag = convertToLanguageTag(language)
+    private val languageTag = convertToLanguageTag(language)
     override fun createIntent(context: Context, input: Unit): Intent {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(

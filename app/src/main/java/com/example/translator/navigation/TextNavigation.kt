@@ -1,11 +1,9 @@
 package com.example.translator.navigation
 
-import android.content.Context
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.translator.ui.screens.camera.CameraViewModel
 import com.example.translator.ui.screens.text.TextScreen
 import com.example.translator.ui.screens.text.TextViewModel
 

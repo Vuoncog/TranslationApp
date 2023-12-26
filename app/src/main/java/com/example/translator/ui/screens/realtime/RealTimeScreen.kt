@@ -1,43 +1,20 @@
 package com.example.translator.ui.screens.realtime
 
 import android.content.Context
-import android.view.ViewGroup
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
-import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cameraswitch
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,25 +24,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.toComposeRect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
-import coil.size.Size
-import com.example.translator.ui.components.LanguageCard
-import com.example.translator.ui.screens.camera.CameraPreview
-import com.example.translator.utils.Language
+import com.example.translator.data.Language
 import com.example.translator.utils.boxInfo
 import com.example.translator.utils.convertToLanguageTag
 import com.example.translator.utils.languageIdentifier
@@ -76,7 +47,6 @@ import com.example.translator.utils.textTranslator
 import com.google.mlkit.vision.text.Text.TextBlock
 import com.google.mlkit.vision.text.TextRecognizer
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RealTimeScreen(
     realtimeViewModel: RealtimeViewModel,
@@ -110,9 +80,6 @@ fun RealTimeScreen(
                         cameraController = cameraController,
                         lifecycleOwner = lifecycleOwner,
                         previewView = previewView,
-                        sourceLanguage = uiState.sourceLanguage,
-                        targetLanguage = uiState.targetLanguage,
-                        downloadLanguages = uiState.downloadedLanguages,
                         textRecognizer = uiState.textRecognition,
                         onDetectedTextBlocksUpdated = {
                             realtimeViewModel.setTextBlocks(it)
@@ -185,7 +152,7 @@ fun DrawAndTranslate(
     var textTranslated by remember { mutableStateOf(block.text) }
     var isTranslated by remember { mutableStateOf(true) }
 
-    LaunchedEffect(key1 = block.text) {
+    LaunchedEffect(key1 = offsetInfo) {
         translateBlock(
             text = textTranslated,
             targetLanguage = targetLanguage,
@@ -279,9 +246,6 @@ private fun startTextRecognition(
     previewView: PreviewView,
     onDetectedTextBlocksUpdated: (List<TextBlock>) -> Unit,
     onRotateUpdated: (Int) -> Unit,
-    sourceLanguage: Language,
-    targetLanguage: Language,
-    downloadLanguages: List<String>,
     textRecognizer: TextRecognizer,
 ) {
 
@@ -290,9 +254,6 @@ private fun startTextRecognition(
         ContextCompat.getMainExecutor(context),
         TextRecognitionAnalyzer(
             onDetectedTextBlocksUpdated = onDetectedTextBlocksUpdated,
-            sourceLanguage = sourceLanguage,
-            targetLanguage = targetLanguage,
-            downloadedLanguages = downloadLanguages,
             textRecognizer = textRecognizer,
             onRotateUpdated = onRotateUpdated
         )

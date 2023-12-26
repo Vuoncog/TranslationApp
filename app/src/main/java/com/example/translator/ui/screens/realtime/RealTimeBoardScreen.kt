@@ -3,9 +3,7 @@ package com.example.translator.ui.screens.realtime
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,8 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -39,11 +35,10 @@ import androidx.navigation.NavHostController
 import com.example.translator.navigation.Screen
 import com.example.translator.ui.components.DropDownMenu
 import com.example.translator.ui.components.LanguageCard
-import com.example.translator.utils.Character
-import com.example.translator.utils.Language
+import com.example.translator.data.Character
+import com.example.translator.data.Language
 import com.example.translator.utils.getDownloadedAllModel
 import com.example.translator.utils.setLanguage
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.util.Locale
 
 @Composable
@@ -53,7 +48,7 @@ fun RealTimeBoardScreen(
 ) {
     val uiState by realtimeViewModel.realtimeUiState.collectAsState()
     val sysLanCheck = uiState.downloadedLanguages.contains(Locale.getDefault().language)
-    var expanded = remember { mutableStateOf(false) }
+    val expanded = remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = true) {
         getDownloadedAllModel(

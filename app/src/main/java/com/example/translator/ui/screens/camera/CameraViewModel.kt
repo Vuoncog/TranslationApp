@@ -3,15 +3,14 @@ package com.example.translator.ui.screens.camera
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.translator.utils.Character
-import com.example.translator.utils.Language
+import com.example.translator.data.Character
+import com.example.translator.data.Language
 import com.example.translator.utils.convertToLanguageTag
 import com.example.translator.utils.languageIdentifier
 import com.example.translator.utils.setLanguage
 import com.example.translator.utils.textTranslator
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
-import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

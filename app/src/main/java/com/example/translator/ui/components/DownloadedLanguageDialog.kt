@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.example.translator.utils.Constant.supportedLanguages
-import com.example.translator.utils.Language
+import com.example.translator.data.Language
 import com.example.translator.utils.downloadModel
 import com.example.translator.utils.setLanguage
 import java.util.Locale
@@ -79,7 +79,7 @@ fun DownloadedLanguageDialog(
                 languageList[it]
             }
         ) { index ->
-            val language = languageList.get(index)
+            val language = languageList[index]
             LanguageInfo(
                 language = language,
                 context = context,
@@ -104,10 +104,10 @@ fun LanguageInfo(
     onDownloadClicked: (String) -> Unit,
     onCardClicked: () -> Unit
 ) {
-    var status = remember {
+    val status = remember {
         mutableStateOf("Not downloaded")
     }
-    var statusColor = remember {
+    val statusColor = remember {
         mutableStateOf(Color(0xFFD9D9D9))
     }
     if (isDownload) {
@@ -140,7 +140,7 @@ fun LanguageInfo(
                     tint = Color.Black.copy(0.7f),
                     modifier = Modifier
                         .size(16.dp)
-                        .clickable() {
+                        .clickable {
                             status.value = "Downloading"
                             downloadModel(
                                 languageTag = language,
