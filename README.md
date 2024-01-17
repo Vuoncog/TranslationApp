@@ -14,18 +14,21 @@
 <img img width="200" src="./assets/main.png">
 </p>
 
-### Images Translator Screen
+### Images Translator
 <p align="center">
-<img img width="200" src="./assets/photo.png">
+<img img width="200" src="./assets/image-1.png">
+<img img width="200" src="./assets/image-2.png">
 </p>
 
-### Text Translator Screen
+### Text Translator
 <p align="center">
-<img img width="200" src="./assets/text.png">
+<img img width="200" src="./assets/text-1.png">
+<img img width="200" src="./assets/text-2.png">
 </p>
 
-### Realtime Translator Screen
+### Realtime Translator
 <p align="center">
-<img img width="200" src="./assets/camera.png">
+<img img width="200" src="./assets/camera-1.png">
+<img img width="200" src="./assets/camera-2.png">
 </p>
 
