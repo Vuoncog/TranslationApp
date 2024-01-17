@@ -105,14 +105,6 @@ class CameraViewModel : ViewModel() {
         _cameraUiState.value = _cameraUiState.value.copy(
             models = models
         )
-//        getDownloadedAllModel(
-//            onSuccess = {
-//                _uiState.value = _uiState.value.copy(
-//                    models = it
-//                )
-//            }
-//        )
-//        Log.d("MLKIT_MODEL", _uiState.value.models.toString())
     }
 
     fun isDownloaded(language: Language): Boolean {

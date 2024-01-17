@@ -62,12 +62,9 @@ fun languageIdentifier(
                     onSuccess(tag)
                 }
                 val confidence = identifiedLanguage.confidence
-                Log.d("MLKIT", "$language $confidence")
             }
         }
         .addOnFailureListener {
-            // Model couldn’t be loaded or other internal error.
-            // ...
 
         }
 }
@@ -138,7 +135,6 @@ fun boxInfo(rotate: Int, textBlock: android.graphics.Rect): Pair<Int, Int> {
         }
     }
 }
-
 fun offsetInfo(
     rotate: Int,
     textBlock: android.graphics.Rect,
@@ -150,28 +146,23 @@ fun offsetInfo(
             val offsetY = textBlock.bottom
             Pair(offsetX, offsetY)
         }
-
         180 -> {
             val offsetX = textBlock.top
             val offsetY = height - textBlock.right
             Pair(offsetX, offsetY)
         }
-
         270 -> {
             val offsetX = width - textBlock.right
             val offsetY = height - textBlock.bottom
             Pair(offsetX, offsetY)
         }
-
         else -> {
             val offsetX = width - textBlock.top
             val offsetY = textBlock.left
-            Log.d("OFFSETHEIGHT", textBlock.height().toString())
             Pair(offsetX, offsetY)
         }
     }
 }
-
 fun textRotate(rotate: Float): Float{
     return when (rotate){
         180f -> 270f

@@ -182,11 +182,6 @@ fun imageProcessing(
             .addOnSuccessListener { visionText ->
                 cameraViewModel.recognizeText(visionText.text)
                 cameraViewModel.setSourceLanguage()
-//                Toast.makeText(
-//                    context,
-//                    "Translating. Wait a bit...",
-//                    Toast.LENGTH_LONG
-//                ).show()
             }
             .addOnFailureListener { _ ->
                 Toast.makeText(

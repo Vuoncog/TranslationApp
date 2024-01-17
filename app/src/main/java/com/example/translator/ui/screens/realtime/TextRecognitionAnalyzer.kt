@@ -34,7 +34,6 @@ class TextRecognitionAnalyzer(
     override fun analyze(imageProxy: ImageProxy) {
         scope.launch {
             val mediaImage: Image = imageProxy.image ?: run { imageProxy.close(); return@launch }
-            Log.d("MLROTATE", imageProxy.imageInfo.rotationDegrees.toString())
             onRotateUpdated(imageProxy.imageInfo.rotationDegrees)
             val inputImage: InputImage =
                 InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
